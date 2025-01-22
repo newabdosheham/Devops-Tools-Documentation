@@ -19,20 +19,22 @@ pipeline {
             }
         }
 	stage('Delete Cluster') {
-            steps {
-              // You will need to install CloudBees AWS Credentials Plugin in Jenkins and add AWS Credentials first 
+         steps {
+           script {
+            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                 withCredentials([[
-                  $class: 'AmazonWebServicesCredentialsBinding',
-                  credentialsId: "aws-credentials",
-                  accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                  secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-                  ]]) {
-                  sh "eksctl delete cluster --name comingsoon-cluster --region eu-central-1"
-                  sleep(time: 180, unit: "SECONDS")
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: "aws-credentials",
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                ]]) {
+                    sh "eksctl delete cluster --name comingsoon-cluster --region us-east-1"
+                    sleep(time: 180, unit: "SECONDS")
                 }
             }
         }
- 
+    }
+}
         stage('Create Cluster') {
             steps {
               // You will need to install CloudBees AWS Credentials Plugin in Jenkins and add AWS Credentials first 
